@@ -1,3 +1,4 @@
-import MinDomRender from "./components/MixRender/index";
-import VirtualHeightList from "./components/VirtualHeightList/index";
-export { MinDomRender, VirtualHeightList };
+import VirtualList from "./components/VirtualList";
+import WaterfallVirtualList from "./components/WaterfallVirtualList";
+
+export { VirtualList, WaterfallVirtualList };
