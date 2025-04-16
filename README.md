@@ -19,21 +19,21 @@ npm install --save react18-virtual-scroll
 
 ## 使用
 
-|      属性      | 说明                                                           | 类型                          | 默认值        |        生效组件        |
-| :------------: | -------------------------------------------------------------- | ----------------------------- | ------------- | :--------------------: |
-|      data      | 需要渲染的数据列表                                             | object[ ]                     | [ ]           |          all           |
-|     width      | 虚拟滚动容器的宽度                                             | string                        | 100%          |          all           |
-|     height     | 虚拟滚动容器的高度                                             | string                        | 500px         |          all           |
-|  `className`   | 虚拟滚动容器的 class 名                                        | string                        | ""            |          all           |
-|     style      | 虚拟滚动容器的 style 样式                                      | `React.CSSProperties`         | `{ }`         |          all           |
-|  `itemNumber`  | 虚拟滚动容器中渲染的数量                                       | number                        | 10            |          all           |
-|   `overscan`   | 以 `itemNumber` 为基础向上下额外渲染的数量                     | number                        | 5             |          all           |
-|      gap       | 虚拟滚动容器每项的间距                                         | number `\|`[ number, number ] | 8             |          all           |
-|     `Item`     | 每一项的渲染组件                                               | Item (具体见下文)             | 必传项        |          all           |
-| `getNextData`  | 获取下一页数据的方法                                           | `() => void`                  | `() `=> `{ }` |          all           |
-| `getLastData`  | 获取上一页数据的方法                                           | `() => void`                  | `() `=> `{ }` |     `VirtualList`      |
-| `columnNumber` | 瀑布流的列数                                                   | number                        | `2`           | `WaterfallVirtualList` |
-|  `isVirtual`   | 是否启用虚拟滚动，禁用虚拟滚动时 `itemNumber 和 `overscan 失效 | boolean                       | `true`        | `WaterfallVirtualList` |
+|      属性      | 说明                                                          | 类型                  | 默认值              |        生效组件        |
+| :------------: | ------------------------------------------------------------- | --------------------- | ------------------- | :--------------------: |
+|      data      | 需要渲染的数据列表                                            | object[ ]             | [ ]                 |          all           |
+|     width      | 虚拟滚动容器的宽度                                            | string                | 100%                |          all           |
+|     height     | 虚拟滚动容器的高度                                            | string                | 500px               |          all           |
+|  `className`   | 虚拟滚动容器的 class 名                                       | string                | ""                  |          all           |
+|     style      | 虚拟滚动容器的 style 样式                                     | `React.CSSProperties` | `{ }`               |          all           |
+|  `itemNumber`  | 虚拟滚动容器中渲染的数量                                      | number                | 10                  |          all           |
+|   `overscan`   | 以`itemNumber` 为基础向上下额外渲染的数量                     | number                | 5                   |          all           |
+|      gap       | 虚拟滚动容器每项的间距                                        | number`               | `[ number, number ] |           8            |
+|     `Item`     | 每一项的渲染组件                                              | Item (具体见下文)     | 必传项              |          all           |
+| `getNextData`  | 获取下一页数据的方法                                          | `() => void`          | `() `=> `{ }`       |          all           |
+| `getLastData`  | 获取上一页数据的方法                                          | `() => void`          | `() `=> `{ }`       |     `VirtualList`      |
+| `columnNumber` | 瀑布流的列数                                                  | number                | `2`                 | `WaterfallVirtualList` |
+|  `isVirtual`   | 是否启用虚拟滚动，禁用虚拟滚动时`itemNumber 和 `overscan 失效 | boolean               | `true`              | `WaterfallVirtualList` |
 
 ### Item 渲染组件类型
 
@@ -52,7 +52,7 @@ type Item = (
 ### 使用方法
 
 ```tsx
-import React, {
+react18-virtual-scroll 是基于 react 18+ 开发的，对 react 低版本支持程度不高，如在 react 18 - 版本遇到问题可以尝试升级 react 版本到 18+ 解决import React, {
   useEffect,
   useRef,
   useState,
@@ -116,4 +116,5 @@ export default Home;
 ## 注意事项
 
 1. data 中需要包含 height 这个 height 必须是真实的渲染高度
-2. 目前暂不支持非固定高度渲染，正在火速开发中，欢迎各位用户留言
+2. react18-virtual-scroll 是基于 react 18+ 开发的，对 react 低版本支持程度不高，如在 react 18 - 版本遇到问题可以尝试升级 react 版本到 18+ 解决
+3. 目前暂不支持非固定高度渲染，正在火速开发中，欢迎各位用户留言
