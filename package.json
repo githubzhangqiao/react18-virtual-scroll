@@ -1,6 +1,6 @@
 {
   "name": "react18-virtual-scroll",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Virtual scrolling best practices in react 18+",
   "main": "index.ts",
   "scripts": {

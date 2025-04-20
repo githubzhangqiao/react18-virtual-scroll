@@ -52,7 +52,7 @@ type Item = (
 ### 使用方法
 
 ```tsx
-react18-virtual-scroll 是基于 react 18+ 开发的，对 react 低版本支持程度不高，如在 react 18 - 版本遇到问题可以尝试升级 react 版本到 18+ 解决import React, {
+import React, {
   useEffect,
   useRef,
   useState,
