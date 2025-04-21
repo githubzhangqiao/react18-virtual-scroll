@@ -1,6 +1,6 @@
 {
   "name": "react18-virtual-scroll",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Virtual scrolling best practices in react 18+",
   "main": "index.ts",
   "scripts": {
@@ -21,7 +21,7 @@
     "url": "https://github.com/githubzhangqiao/react18-virtual-scroll/issues"
   },
   "homepage": "https://github.com/githubzhangqiao/react18-virtual-scroll#readme",
-  "dependencies": {
-    "react": "^19.1.0"
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0"
   }
 }
