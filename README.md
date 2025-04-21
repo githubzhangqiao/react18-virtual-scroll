@@ -121,4 +121,6 @@ export default Home;
 
 ## 问题反馈
 
+由于网络问题 npm 上可能加载失败 可以点击跳转 github 查看图片或者 搜索 qq 群号 进群 980946076
+
 <img width="368" alt="screen shot 2019-03-07 at 7 32 32 pm" src="./qrcode_1745215856457.jpg">
