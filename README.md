@@ -118,3 +118,7 @@ export default Home;
 1. data 中需要包含 height 这个 height 必须是真实的渲染高度
 2. react18-virtual-scroll 是基于 react 18+ 开发的，对 react 低版本支持程度不高，如在 react 18 - 版本遇到问题可以尝试升级 react 版本到 18+ 解决
 3. 目前暂不支持非固定高度渲染，正在火速开发中，欢迎各位用户留言
+
+## 问题反馈
+
+<img width="368" alt="screen shot 2019-03-07 at 7 32 32 pm" src="./qrcode_1745215856457.jpg">
