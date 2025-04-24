@@ -26,14 +26,13 @@
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0"
   },
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
+    "@types/react": "^19.1.2",
     "@rollup/plugin-commonjs": "^28.0.3",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-typescript": "^12.1.2",
     "tslib": "^2.8.1",
     "typescript": "^5.8.3"
-  },
-  "devDependencies": {
-    "@types/react": "^19.1.2"
   }
 }
