@@ -61,7 +61,7 @@ const VirtualList = <T,>(props: Props<T>) => {
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const ref = useRef([]);
+  const ref = useRef<HTMLDivElement>(null);
 
   const heightList = useMemo(() => {
     let height = 0;
@@ -82,12 +82,13 @@ const VirtualList = <T,>(props: Props<T>) => {
     // if (isUnknownHeight) {
     //   setData(dataList);
     // } else {
+    // @ts-ignore
     setData(dataList);
     // }
   }, [dataList]);
 
   const handleScroll = useCallback(
-    (e) => {
+    (e: any) => {
       setCurrentIndex(
         heightList.findIndex((item) => item > e.target.scrollTop)
       );
@@ -135,7 +136,7 @@ const VirtualList = <T,>(props: Props<T>) => {
             return null;
           }
 
-          const style = {
+          const style: { top: string; position: "absolute" } = {
             position: "absolute",
             top: `${data
               .slice(0, index)

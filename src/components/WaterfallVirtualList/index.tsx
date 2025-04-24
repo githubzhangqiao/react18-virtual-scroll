@@ -65,10 +65,10 @@ const WaterfallVirtualList = <T,>(props: Props<T>) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemHeights, setItemHeights] = useState(0);
 
-  const ref = useRef([]);
+  const ref = useRef<HTMLDivElement>(null);
 
-  const getMinAndIndex = (arr) => {
-    if (arr.length === 0) return { value: undefined, index: -1 }; // 处理空数组
+  const getMinAndIndex = (arr: number[]) => {
+    if (arr.length === 0) return { value: 0, index: -1 }; // 处理空数组
 
     let min = arr[0];
     let index = 0;
@@ -115,12 +115,13 @@ const WaterfallVirtualList = <T,>(props: Props<T>) => {
     // if (isUnknownHeight) {
     //   setData(dataList);
     // } else {
+    // @ts-ignore
     setData(dataList);
     // }
   }, [dataList]);
 
   const handleScroll = useCallback(
-    (e) => {
+    (e: any) => {
       setCurrentIndex(
         heightList.findIndex((item) => item.height > e.target.scrollTop)
       );
@@ -165,7 +166,12 @@ const WaterfallVirtualList = <T,>(props: Props<T>) => {
             return null;
           }
 
-          const style = {
+          const style: {
+            top: number;
+            left: number | string;
+            width: string;
+            position: "absolute";
+          } = {
             position: "absolute",
             width: `calc((${width} - ${verticalInterval[1]}px) / ${columnNumber})`,
             top: heightList[index].height - Number(item.height.toFixed()),

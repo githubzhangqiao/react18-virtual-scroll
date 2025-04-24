@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "target": "ES6", // 输出目标（ES6/ES5）
+    "module": "ESNext", // 模块系统（ESNext/ES6）
+    "strict": true, // 启用严格模式
+    "esModuleInterop": true, // 允许 CommonJS/ES 模块互操作
+    "skipLibCheck": true, // 跳过库文件的类型检查
+    "moduleResolution": "node", // 模块解析方式
+    "outDir": "dist", // 输出目录（Rollup 会覆盖，但可以保留）
+    "declaration": true, // 生成 .d.ts 文件（可选）
+    "declarationDir": "dist/types" // 类型声明文件输出目录（可选）
+  },
+  "include": [
+    "src/**/*"
+  ], // 包含的文件
+  "exclude": [
+    "node_modules"
+  ] // 排除的文件
+}

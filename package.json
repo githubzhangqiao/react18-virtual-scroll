@@ -1,10 +1,12 @@
 {
   "name": "react18-virtual-scroll",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Virtual scrolling best practices in react 18+",
-  "main": "index.ts",
+  "main": "src/index.ts",
+  "type": "module",
   "scripts": {
-    "test": "test.ts"
+    "test": "test.ts",
+    "build": "rollup -c"
   },
   "repository": {
     "type": "git",
@@ -23,5 +25,15 @@
   "homepage": "https://github.com/githubzhangqiao/react18-virtual-scroll#readme",
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0"
+  },
+  "dependencies": {
+    "@rollup/plugin-commonjs": "^28.0.3",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "tslib": "^2.8.1",
+    "typescript": "^5.8.3"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.2"
   }
 }
