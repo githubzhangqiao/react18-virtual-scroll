@@ -26,7 +26,13 @@ export interface Props<T> {
   gap?: number | number[];
   // isUnknownHeight?: boolean;
   getNextData?: () => void;
-  getLastData?: () => void;
+  getLastData?: (
+    scrollTo: (obj: {
+      top: number;
+      left: number;
+      behavior?: "smooth" | "auto" | "instant";
+    }) => void
+  ) => void;
 }
 
 const VirtualList = <T,>(props: Props<T>) => {
@@ -93,7 +99,7 @@ const VirtualList = <T,>(props: Props<T>) => {
         heightList.findIndex((item) => item > e.target.scrollTop)
       );
       if (e.target.scrollTop === 0) {
-        getLastData();
+        getLastData((options) => ref.current?.scrollTo(options));
       }
       if (heightList[heightList.length - 2 - overscan] < e.target.scrollTop) {
         getNextData();
