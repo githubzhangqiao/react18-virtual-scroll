@@ -5,17 +5,17 @@ import React, {
   useRef,
   useState,
 } from "react";
-
-interface Props<T> {
-  Item: (
-    currentData: {
-      item: T;
-      index: number;
-      height: number;
-      ref?: React.RefObject<HTMLDivElement>;
-    },
-    defaultStyle: React.CSSProperties
-  ) => React.JSX.Element;
+export type Item<T> = (
+  currentData: {
+    item: T;
+    index: number;
+    height: number;
+    ref?: React.RefObject<HTMLDivElement>;
+  },
+  defaultStyle: React.CSSProperties
+) => React.JSX.Element;
+export interface Props<T> {
+  Item: Item<T>;
   data: T[];
   width?: number | string;
   height?: number | string;
@@ -105,8 +105,6 @@ const WaterfallVirtualList = <T,>(props: Props<T>) => {
           : 0,
       });
     });
-    console.log(heightList);
-    console.log(heightsList);
     setItemHeights(Math.max(...heightsList));
     return heightList;
   }, [data, columnNumber]);
@@ -128,7 +126,6 @@ const WaterfallVirtualList = <T,>(props: Props<T>) => {
       if (
         heightList[heightList.length - 2 - overscan].height < e.target.scrollTop
       ) {
-        console.log("下一页");
         getNextData();
       }
     },
@@ -191,4 +188,4 @@ const WaterfallVirtualList = <T,>(props: Props<T>) => {
   );
 };
 
-export default WaterfallVirtualList;
+export { WaterfallVirtualList };

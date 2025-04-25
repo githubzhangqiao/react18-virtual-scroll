@@ -5,16 +5,17 @@ import React, {
   useRef,
   useState,
 } from "react";
-interface Props<T> {
-  Item: (
-    currentData: {
-      item: T;
-      index: number;
-      height: number;
-      ref?: React.RefObject<HTMLDivElement>;
-    },
-    defaultStyle: React.CSSProperties
-  ) => React.JSX.Element;
+export type Item<T> = (
+  currentData: {
+    item: T;
+    index: number;
+    height: number;
+    ref?: React.RefObject<HTMLDivElement>;
+  },
+  defaultStyle: React.CSSProperties
+) => React.JSX.Element;
+export interface Props<T> {
+  Item: Item<T>;
   data: T[];
   width?: number | string;
   height?: number | string;
@@ -73,7 +74,6 @@ const VirtualList = <T,>(props: Props<T>) => {
       height += item.height;
       heightList.push(height);
     });
-    console.log(heightList);
 
     return heightList;
   }, [data]);
@@ -93,11 +93,9 @@ const VirtualList = <T,>(props: Props<T>) => {
         heightList.findIndex((item) => item > e.target.scrollTop)
       );
       if (e.target.scrollTop === 0) {
-        console.log("上一页");
         getLastData();
       }
       if (heightList[heightList.length - 2 - overscan] < e.target.scrollTop) {
-        console.log("下一页");
         getNextData();
       }
     },
@@ -156,4 +154,4 @@ const VirtualList = <T,>(props: Props<T>) => {
   );
 };
 
-export default VirtualList;
+export { VirtualList };
