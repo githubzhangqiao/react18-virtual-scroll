@@ -163,6 +163,17 @@ const WaterfallVirtualList = <T,>(props: Props<T>) => {
             return null;
           }
 
+          let w = "";
+          if (typeof width === "number") {
+            w = (width - verticalInterval[1]) / 2 + "px";
+          } else if (width.includes("px")) {
+            w =
+              (Number(width.slice(0, width.length - 2)) - verticalInterval[1]) /
+                2 +
+              "px";
+          } else {
+            w = `calc((${width} - ${verticalInterval[1]}px) / ${columnNumber})`;
+          }
           const style: {
             top: number;
             left: number | string;
@@ -170,7 +181,7 @@ const WaterfallVirtualList = <T,>(props: Props<T>) => {
             position: "absolute";
           } = {
             position: "absolute",
-            width: `calc((${width} - ${verticalInterval[1]}px) / ${columnNumber})`,
+            width: w,
             top: heightList[index].height - Number(item.height.toFixed()),
             left: heightList[index].width,
           };

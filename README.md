@@ -61,7 +61,7 @@ type scrollTo = (obj: {
 
 ### 使用方法
 
-1. VirtualList (虚拟滚动列表)
+1. VirtualList (虚拟滚动列表) [demo](https://codesandbox.io/p/sandbox/holy-sea-p5hpgh)
 
 ```tsx
 import React from "react";
@@ -103,7 +103,7 @@ const Home = ({ initialData }) => {
 export default Home;
 ```
 
-2. WaterfallVirtualList (瀑布流虚拟滚动)
+2. WaterfallVirtualList (瀑布流虚拟滚动) [demo](https://codesandbox.io/p/sandbox/ecstatic-wilbur-hstvcl)
 
 ```tsx
 import React from "react";
