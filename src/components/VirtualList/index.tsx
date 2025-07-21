@@ -33,6 +33,7 @@ export interface Props<T> {
       behavior?: "smooth" | "auto" | "instant";
     }) => void
   ) => void;
+  getCurrentIndex?: (index: number) => void;
 }
 
 const VirtualList = <T,>(props: Props<T>) => {
@@ -49,6 +50,7 @@ const VirtualList = <T,>(props: Props<T>) => {
     // isUnknownHeight = false,
     getNextData = () => {},
     getLastData = () => {},
+    getCurrentIndex = () => {},
   } = props;
   type EnhancedData<T> = T & { height: number };
   const verticalInterval = useMemo(() => {
@@ -95,9 +97,9 @@ const VirtualList = <T,>(props: Props<T>) => {
 
   const handleScroll = useCallback(
     (e: any) => {
-      setCurrentIndex(
-        heightList.findIndex((item) => item > e.target.scrollTop)
-      );
+      const index = heightList.findIndex((item) => item > e.target.scrollTop);
+      setCurrentIndex(index);
+      getCurrentIndex(index);
       if (e.target.scrollTop === 0) {
         getLastData((options) => ref.current?.scrollTo(options));
       }

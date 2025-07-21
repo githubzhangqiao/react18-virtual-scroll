@@ -28,6 +28,7 @@ export interface Props<T> {
   gap?: number | number[];
   // isUnknownHeight?: boolean;
   getNextData?: () => void;
+  getCurrentIndex?: (index: number) => void;
 }
 
 const WaterfallVirtualList = <T,>(props: Props<T>) => {
@@ -45,6 +46,7 @@ const WaterfallVirtualList = <T,>(props: Props<T>) => {
     data: dataList,
     // isUnknownHeight = false,
     getNextData = () => {},
+    getCurrentIndex = () => {},
   } = props;
   type EnhancedData<T> = T & { height: number };
   const verticalInterval = useMemo(() => {
@@ -120,9 +122,11 @@ const WaterfallVirtualList = <T,>(props: Props<T>) => {
 
   const handleScroll = useCallback(
     (e: any) => {
-      setCurrentIndex(
-        heightList.findIndex((item) => item.height > e.target.scrollTop)
+      const index = heightList.findIndex(
+        (item) => item.height > e.target.scrollTop
       );
+      setCurrentIndex(index);
+      getCurrentIndex(index);
       if (
         heightList[heightList.length - 2 - overscan].height < e.target.scrollTop
       ) {
