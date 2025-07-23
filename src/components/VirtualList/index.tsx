@@ -156,7 +156,7 @@ const VirtualList = <T extends HasHeight>(props: VirtualListProps<T>) => {
       <div
         className="aaa"
         ref={getHeightRef}
-        style={{ left: "-9999999", right: "-9999999" }}
+        style={{ position: "fixed", left: "-9999999", right: "-9999999" }}
       >
         {data.length && heightIndex < data.length
           ? Item(
