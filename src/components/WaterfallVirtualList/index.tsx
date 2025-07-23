@@ -5,33 +5,8 @@ import React, {
   useRef,
   useState,
 } from "react";
-export type Item<T> = (
-  currentData: {
-    item: T;
-    index: number;
-    height: number;
-    ref?: React.RefObject<HTMLDivElement>;
-  },
-  defaultStyle: React.CSSProperties
-) => React.JSX.Element;
-export interface Props<T> {
-  Item: Item<T>;
-  data: T[];
-  width?: number | string;
-  height?: number | string;
-  style?: React.CSSProperties;
-  className?: string;
-  columnNumber?: number;
-  isVirtual?: boolean;
-  itemNumber?: number;
-  overscan?: number;
-  gap?: number | number[];
-  // isUnknownHeight?: boolean;
-  getNextData?: () => void;
-  getCurrentIndex?: (index: number) => void;
-}
-
-const WaterfallVirtualList = <T,>(props: Props<T>) => {
+import { WaterfallVirtualListProps } from "../type";
+const WaterfallVirtualList = <T,>(props: WaterfallVirtualListProps<T>) => {
   const {
     width = "100%",
     height = "500px",

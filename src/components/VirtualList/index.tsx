@@ -5,38 +5,8 @@ import React, {
   useRef,
   useState,
 } from "react";
-export type Item<T> = (
-  currentData: {
-    item: T;
-    index: number;
-    height: number;
-    ref?: React.RefObject<HTMLDivElement>;
-  },
-  defaultStyle: React.CSSProperties
-) => React.JSX.Element;
-export interface Props<T> {
-  Item: Item<T>;
-  data: T[];
-  width?: number | string;
-  height?: number | string;
-  style?: React.CSSProperties;
-  className?: string;
-  itemNumber?: number;
-  overscan?: number;
-  gap?: number | number[];
-  // isUnknownHeight?: boolean;
-  getNextData?: () => void;
-  getLastData?: (
-    scrollTo: (obj: {
-      top: number;
-      left: number;
-      behavior?: "smooth" | "auto" | "instant";
-    }) => void
-  ) => void;
-  getCurrentIndex?: (index: number) => void;
-}
-
-const VirtualList = <T,>(props: Props<T>) => {
+import { HasHeight, VirtualListProps } from "../type";
+const VirtualList = <T extends HasHeight>(props: VirtualListProps<T>) => {
   const {
     width = "100%",
     height = "500px",
@@ -47,12 +17,12 @@ const VirtualList = <T,>(props: Props<T>) => {
     gap = 8,
     Item,
     data: dataList,
-    // isUnknownHeight = false,
+    itemKey,
+    isUnknownHeight = false,
     getNextData = () => {},
     getLastData = () => {},
     getCurrentIndex = () => {},
   } = props;
-  type EnhancedData<T> = T & { height: number };
   const verticalInterval = useMemo(() => {
     try {
       if (typeof gap === "number") {
@@ -66,10 +36,12 @@ const VirtualList = <T,>(props: Props<T>) => {
       return 8;
     }
   }, [gap]);
-  const [data, setData] = useState<EnhancedData<T>[]>([]);
+  const [data, setData] = useState<T[]>([]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
-
+  const getHeightRef = useRef<HTMLDivElement>(null);
+  const [heightIndex, setHeightIndex] = useState(0);
+  const [heightObj, setHeightObj] = useState<{ [key in keyof T]?: number }>({});
   const ref = useRef<HTMLDivElement>(null);
 
   const heightList = useMemo(() => {
@@ -79,21 +51,16 @@ const VirtualList = <T,>(props: Props<T>) => {
       if (index) {
         height += verticalInterval;
       }
-      height += item.height;
+      if (isUnknownHeight) {
+        height += heightObj[item[itemKey]];
+      } else {
+        height += item.height;
+      }
       heightList.push(height);
     });
 
     return heightList;
-  }, [data]);
-
-  useEffect(() => {
-    // if (isUnknownHeight) {
-    //   setData(dataList);
-    // } else {
-    // @ts-ignore
-    setData(dataList);
-    // }
-  }, [dataList]);
+  }, [data, isUnknownHeight, heightObj]);
 
   const handleScroll = useCallback(
     (e: any) => {
@@ -107,8 +74,27 @@ const VirtualList = <T,>(props: Props<T>) => {
         getNextData();
       }
     },
-    [heightList]
+    [heightList, heightList]
   );
+
+  useEffect(() => {
+    if (
+      isUnknownHeight &&
+      data.length &&
+      getHeightRef.current &&
+      heightIndex < data.length
+    ) {
+      setHeightObj({
+        ...heightObj,
+        [data[heightIndex][itemKey]]: getHeightRef.current.offsetHeight,
+      });
+      setHeightIndex(heightIndex + 1);
+    }
+  }, [isUnknownHeight, heightIndex, data]);
+
+  useEffect(() => {
+    setData(dataList);
+  }, [dataList]);
 
   useEffect(() => {
     if (ref.current) {
@@ -117,7 +103,7 @@ const VirtualList = <T,>(props: Props<T>) => {
     return () => {
       ref.current?.removeEventListener("scroll", handleScroll);
     };
-  }, [ref.current, data]);
+  }, [ref.current, data, heightList]);
   return (
     <div
       className={className}
@@ -144,19 +130,44 @@ const VirtualList = <T,>(props: Props<T>) => {
 
           const style: { top: string; position: "absolute" } = {
             position: "absolute",
-            top: `${data
-              .slice(0, index)
-              .reduce((sum, i) => sum + i.height + verticalInterval, 0)}px`,
+            top: isUnknownHeight
+              ? `${data
+                  .slice(0, index)
+                  .reduce(
+                    (sum, i) => sum + heightObj[i[itemKey]] + verticalInterval,
+                    0
+                  )}px`
+              : `${data
+                  .slice(0, index)
+                  .reduce((sum, i) => sum + i.height + verticalInterval, 0)}px`,
           };
           return Item(
             {
               item,
               index,
-              height: item.height,
+              height: isUnknownHeight
+                ? heightObj[item[itemKey]] || 0
+                : item.height,
             },
             { ...style }
           );
         })}
+      </div>
+      <div
+        className="aaa"
+        ref={getHeightRef}
+        style={{ left: "-9999999", right: "-9999999" }}
+      >
+        {data.length && heightIndex < data.length
+          ? Item(
+              {
+                item: data[heightIndex],
+                index: heightIndex,
+                height: "auto",
+              },
+              {}
+            )
+          : null}
       </div>
     </div>
   );
