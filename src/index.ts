@@ -1,13 +1,10 @@
-import type {
-  Item as VirtualItem,
-  Props as VirtualProps,
-} from "./components/VirtualList";
-import type {
-  Item as WaterfallItem,
-  Props as WaterfallProps,
-} from "./components/WaterfallVirtualList";
-type Props<T> = VirtualProps<T> | WaterfallProps<T>;
+import {
+  Item,
+  VirtualListProps,
+  WaterfallVirtualListProps,
+} from "./components/type";
+type Props<T> = VirtualListProps<T> | WaterfallVirtualListProps<T>;
 
 export { VirtualList } from "./components/VirtualList";
 export { WaterfallVirtualList } from "./components/WaterfallVirtualList";
-export type { VirtualItem as Item, Props };
+export type { Item, Props, VirtualListProps, WaterfallVirtualListProps };
