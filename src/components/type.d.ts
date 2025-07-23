@@ -24,6 +24,7 @@ interface VirtualListProps<T> {
   gap?: number | number[];
   isUnknownHeight?: boolean;
   itemKey: keyof T?;
+  getCurrentIndex?: (index: number) => void;
   getNextData?: () => void;
   getLastData?: (
     scrollTo: (obj: {
@@ -32,7 +33,6 @@ interface VirtualListProps<T> {
       behavior?: "smooth" | "auto" | "instant";
     }) => void
   ) => void;
-  getCurrentIndex?: (index: number) => void;
 }
 
 interface WaterfallVirtualListProps<T> {
@@ -47,9 +47,9 @@ interface WaterfallVirtualListProps<T> {
   itemNumber?: number;
   overscan?: number;
   gap?: number | number[];
+  getCurrentIndex?: (index: number) => void;
   // isUnknownHeight?: boolean;
   getNextData?: () => void;
-  getCurrentIndex?: (index: number) => void;
 }
 
 export { HasHeight, Item, VirtualListProps, WaterfallVirtualListProps };
