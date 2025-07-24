@@ -15,6 +15,7 @@ const VirtualList = <T extends HasHeight>(props: VirtualListProps<T>) => {
     itemNumber = 10,
     overscan = 5,
     gap = 8,
+    messageType = "",
     Item,
     data: dataList,
     itemKey,
@@ -37,37 +38,38 @@ const VirtualList = <T extends HasHeight>(props: VirtualListProps<T>) => {
     }
   }, [gap]);
   const [data, setData] = useState<T[]>([]);
-
+  type HeightObjType = { [key in keyof T]?: number };
   const [currentIndex, setCurrentIndex] = useState(0);
   const [heightIndex, setHeightIndex] = useState(0);
-  const [heightObj, setHeightObj] = useState<{ [key in keyof T]?: number }>({});
+  const [heightObj, setHeightObj] = useState<HeightObjType>({});
 
   const getHeightRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDivElement>(null);
 
   const heightList = useMemo(() => {
     let height = 0;
-    const heightList: number[] = [];
+    const heightsList: number[] = [];
     data.forEach((item, index) => {
       if (index) {
         height += verticalInterval;
       }
       if (isUnknownHeight) {
-        height += heightObj[item[itemKey]];
+        height += heightObj[item[itemKey] as keyof HeightObjType] || 0;
+        const a = item[itemKey];
       } else {
         height += item.height;
       }
-      heightList.push(height);
+      heightsList.push(height);
     });
 
-    return heightList;
+    return heightsList;
   }, [data, isUnknownHeight, heightObj]);
 
   const handleScroll = useCallback(
     (e: any) => {
       const index = heightList.findIndex((item) => item > e.target.scrollTop);
-      setCurrentIndex(index);
-      getCurrentIndex(index);
+      setCurrentIndex(index < 0 ? 0 : index);
+      getCurrentIndex(index < 0 ? 0 : index);
       if (e.target.scrollTop === 0) {
         getLastData((options) => ref.current?.scrollTo(options));
       }
@@ -77,6 +79,34 @@ const VirtualList = <T extends HasHeight>(props: VirtualListProps<T>) => {
     },
     [heightList]
   );
+
+  const setHeightObjItem = useCallback(
+    (data: { item: T; height: number; type: string }) => {
+      const { item, height, type } = data;
+
+      if (
+        type === messageType ||
+        (messageType === "" && String(item?.[itemKey]) && height)
+      ) {
+        setHeightObj({
+          ...heightObj,
+          [item[itemKey] as keyof T]: height,
+        });
+      }
+    },
+    [messageType, heightObj]
+  );
+
+  useEffect(() => {
+    window.addEventListener("message", (data: any) =>
+      setHeightObjItem(data.data)
+    );
+    return () => {
+      window.removeEventListener("message", (data: any) =>
+        setHeightObjItem(data.data)
+      );
+    };
+  }, [messageType, heightObj]);
 
   useEffect(() => {
     setData(dataList);
@@ -91,7 +121,8 @@ const VirtualList = <T extends HasHeight>(props: VirtualListProps<T>) => {
     ) {
       setHeightObj({
         ...heightObj,
-        [data[heightIndex][itemKey]]: getHeightRef.current.offsetHeight,
+        [data[heightIndex][itemKey] as keyof T]:
+          getHeightRef.current.offsetHeight,
       });
       setHeightIndex(heightIndex + 1);
     }
@@ -119,7 +150,20 @@ const VirtualList = <T extends HasHeight>(props: VirtualListProps<T>) => {
       ref={ref}
     >
       <div
-        style={{ height: `${data.reduce((sum, i) => sum + i.height, 0)}px` }}
+        style={{
+          height: isUnknownHeight
+            ? `${data.reduce(
+                (sum, i) =>
+                  sum +
+                  (heightObj[i[itemKey] as keyof HeightObjType] || 0) +
+                  verticalInterval,
+                -verticalInterval
+              )}px`
+            : `${data.reduce(
+                (sum, i) => sum + i.height + verticalInterval,
+                -verticalInterval
+              )}px`,
+        }}
       >
         {data.map((item, index) => {
           if (
@@ -135,7 +179,10 @@ const VirtualList = <T extends HasHeight>(props: VirtualListProps<T>) => {
               ? `${data
                   .slice(0, index)
                   .reduce(
-                    (sum, i) => sum + heightObj[i[itemKey]] + verticalInterval,
+                    (sum, i) =>
+                      sum +
+                      (heightObj[i[itemKey] as keyof HeightObjType] || 0) +
+                      verticalInterval,
                     0
                   )}px`
               : `${data
@@ -157,13 +204,18 @@ const VirtualList = <T extends HasHeight>(props: VirtualListProps<T>) => {
       <div
         className="aaa"
         ref={getHeightRef}
-        style={{ position: "fixed", left: "-9999999", right: "-9999999" }}
+        style={{
+          width,
+          position: "absolute",
+          left: "-99999px",
+          right: "-99999px",
+        }}
       >
-        {data.length && heightIndex < data.length
+        {data.length
           ? Item(
               {
-                item: data[heightIndex],
-                index: heightIndex,
+                item: heightIndex < data.length ? data[heightIndex] : data[0],
+                index: heightIndex < data.length ? heightIndex : 0,
                 height: "auto",
               },
               {}
