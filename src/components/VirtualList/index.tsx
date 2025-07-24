@@ -39,9 +39,10 @@ const VirtualList = <T extends HasHeight>(props: VirtualListProps<T>) => {
   const [data, setData] = useState<T[]>([]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const getHeightRef = useRef<HTMLDivElement>(null);
   const [heightIndex, setHeightIndex] = useState(0);
   const [heightObj, setHeightObj] = useState<{ [key in keyof T]?: number }>({});
+
+  const getHeightRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDivElement>(null);
 
   const heightList = useMemo(() => {
@@ -74,8 +75,12 @@ const VirtualList = <T extends HasHeight>(props: VirtualListProps<T>) => {
         getNextData();
       }
     },
-    [heightList, heightList]
+    [heightList]
   );
+
+  useEffect(() => {
+    setData(dataList);
+  }, [dataList]);
 
   useEffect(() => {
     if (
@@ -93,10 +98,6 @@ const VirtualList = <T extends HasHeight>(props: VirtualListProps<T>) => {
   }, [isUnknownHeight, heightIndex, data]);
 
   useEffect(() => {
-    setData(dataList);
-  }, [dataList]);
-
-  useEffect(() => {
     if (ref.current) {
       ref.current.addEventListener("scroll", handleScroll);
     }
@@ -104,6 +105,7 @@ const VirtualList = <T extends HasHeight>(props: VirtualListProps<T>) => {
       ref.current?.removeEventListener("scroll", handleScroll);
     };
   }, [ref.current, data, heightList]);
+
   return (
     <div
       className={className}
@@ -116,7 +118,6 @@ const VirtualList = <T extends HasHeight>(props: VirtualListProps<T>) => {
       }}
       ref={ref}
     >
-      {/* !isUnknownHeight ? data.reduce((sum, i) => sum + i.height, 0) : data.reduce((sum, i) => sum + i.height, 0) */}
       <div
         style={{ height: `${data.reduce((sum, i) => sum + i.height, 0)}px` }}
       >
