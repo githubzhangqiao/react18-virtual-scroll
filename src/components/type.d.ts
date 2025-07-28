@@ -30,7 +30,7 @@ interface VirtualListProps<T> {
   gap?: number | number[];
   messageType?: string;
   isUnknownHeight?: boolean;
-  itemKey: keyof T;
+  itemKey: string & keyof T;
   getNextData?: () => void;
   getLastData?: (
     scrollTo: (obj: {

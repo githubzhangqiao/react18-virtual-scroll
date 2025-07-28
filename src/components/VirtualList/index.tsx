@@ -55,7 +55,6 @@ const VirtualList = <T extends HasHeight>(props: VirtualListProps<T>) => {
       }
       if (isUnknownHeight) {
         height += heightObj[item[itemKey] as keyof HeightObjType] || 0;
-        const a = item[itemKey];
       } else {
         height += item.height;
       }
@@ -86,7 +85,7 @@ const VirtualList = <T extends HasHeight>(props: VirtualListProps<T>) => {
 
       if (
         type === messageType ||
-        (messageType === "" && String(item?.[itemKey]) && height)
+        (messageType === "" && item?.[itemKey] && height)
       ) {
         setHeightObj({
           ...heightObj,
