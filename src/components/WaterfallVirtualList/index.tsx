@@ -24,6 +24,7 @@ const WaterfallVirtualList = <T,>(props: WaterfallVirtualListProps<T>) => {
     getCurrentIndex = () => {},
   } = props;
   type EnhancedData<T> = T & { height: number };
+
   const verticalInterval = useMemo(() => {
     try {
       if (typeof gap === "number") {
@@ -37,6 +38,7 @@ const WaterfallVirtualList = <T,>(props: WaterfallVirtualListProps<T>) => {
       return [8, 8];
     }
   }, [gap]);
+
   const [data, setData] = useState<EnhancedData<T>[]>([]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -44,6 +46,7 @@ const WaterfallVirtualList = <T,>(props: WaterfallVirtualListProps<T>) => {
 
   const ref = useRef<HTMLDivElement>(null);
 
+  // 获取高度最小的一列的高度和索引
   const getMinAndIndex = (arr: number[]) => {
     if (arr.length === 0) return { value: 0, index: -1 }; // 处理空数组
 
@@ -56,12 +59,12 @@ const WaterfallVirtualList = <T,>(props: WaterfallVirtualListProps<T>) => {
         index = i;
       }
     }
-
     return { value: min, index };
   };
 
-  const heightList = useMemo(() => {
-    const heightList: { height: number; width: string | number }[] = [];
+  // 计算每个 item 的 top left
+  const positionList = useMemo(() => {
+    const positionList: { top: number; left: string | number }[] = [];
     const heightsList = new Array(columnNumber).fill(0);
 
     data.forEach((item, index) => {
@@ -73,42 +76,34 @@ const WaterfallVirtualList = <T,>(props: WaterfallVirtualListProps<T>) => {
       }
       heightCount += Number(item.height.toFixed());
       heightsList[mixObj.index] = mixObj.value + heightCount;
-      heightList.push({
-        height: mixObj.value + heightCount,
-        width: index
-          ? `calc((${width} + ${
-              verticalInterval[1] * (columnNumber - 1)
-            }px) / ${columnNumber} * ${mixObj.index})`
-          : 0,
+      positionList.push({
+        top: mixObj.value + heightCount,
+        left: index ? `calc(${width} / ${columnNumber} * ${mixObj.index})` : 0,
       });
     });
     setItemHeights(Math.max(...heightsList));
-    return heightList;
+    return positionList;
   }, [data, columnNumber]);
 
   useEffect(() => {
-    // if (isUnknownHeight) {
-    //   setData(dataList);
-    // } else {
-    // @ts-ignore
-    setData(dataList);
-    // }
+    setData(dataList as EnhancedData<T>[]);
   }, [dataList]);
 
   const handleScroll = useCallback(
     (e: any) => {
-      const index = heightList.findIndex(
-        (item) => item.height > e.target.scrollTop
+      const index = positionList.findIndex(
+        (item) => item.top > e.target.scrollTop
       );
       setCurrentIndex(index);
       getCurrentIndex(index);
       if (
-        heightList[heightList.length - 2 - overscan].height < e.target.scrollTop
+        positionList[positionList.length - 2 - overscan].top <
+        e.target.scrollTop
       ) {
         getNextData();
       }
     },
-    [heightList]
+    [positionList]
   );
 
   useEffect(() => {
@@ -131,7 +126,6 @@ const WaterfallVirtualList = <T,>(props: WaterfallVirtualListProps<T>) => {
       }}
       ref={ref}
     >
-      {/* !isUnknownHeight ? data.reduce((sum, i) => sum + i.height, 0) : data.reduce((sum, i) => sum + i.height, 0) */}
       <div style={{ height: `${itemHeights}px` }}>
         {data.map((item, index) => {
           if (
@@ -144,14 +138,20 @@ const WaterfallVirtualList = <T,>(props: WaterfallVirtualListProps<T>) => {
 
           let w = "";
           if (typeof width === "number") {
-            w = (width - verticalInterval[1]) / 2 + "px";
+            w =
+              (width - verticalInterval[1] * (columnNumber - 1)) /
+                columnNumber +
+              "px";
           } else if (width.includes("px")) {
             w =
-              (Number(width.slice(0, width.length - 2)) - verticalInterval[1]) /
-                2 +
+              (Number(width.slice(0, width.length - 2)) -
+                verticalInterval[1] * (columnNumber - 1)) /
+                columnNumber +
               "px";
           } else {
-            w = `calc((${width} - ${verticalInterval[1]}px) / ${columnNumber})`;
+            w = `calc((${width} - ${
+              verticalInterval[1] * (columnNumber - 1)
+            }px) / ${columnNumber})`;
           }
           const style: {
             top: number;
@@ -161,8 +161,8 @@ const WaterfallVirtualList = <T,>(props: WaterfallVirtualListProps<T>) => {
           } = {
             position: "absolute",
             width: w,
-            top: heightList[index].height - Number(item.height.toFixed()),
-            left: heightList[index].width,
+            top: positionList[index].top - Number(item.height.toFixed()),
+            left: positionList[index].left,
           };
           return Item(
             {
