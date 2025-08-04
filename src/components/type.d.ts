@@ -2,6 +2,8 @@ interface HasHeight {
   height: number;
 }
 
+type EnhancedData<T> = T & { height: number };
+
 type Item<T> = (
   currentData:
     | {
@@ -54,9 +56,17 @@ interface WaterfallVirtualListProps<T> {
   itemNumber?: number;
   overscan?: number;
   gap?: number | number[];
-  // isUnknownHeight?: boolean;
+  messageType?: string;
+  isUnknownHeight?: boolean;
+  itemKey: string & keyof T;
   getNextData?: () => void;
   getCurrentIndex?: (index: number) => void;
 }
 
-export { HasHeight, Item, VirtualListProps, WaterfallVirtualListProps };
+export {
+  EnhancedData,
+  HasHeight,
+  Item,
+  VirtualListProps,
+  WaterfallVirtualListProps,
+};

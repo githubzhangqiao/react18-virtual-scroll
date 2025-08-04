@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { WaterfallVirtualListProps } from "../type";
+import { EnhancedData, WaterfallVirtualListProps } from "../type";
 const WaterfallVirtualList = <T,>(props: WaterfallVirtualListProps<T>) => {
   const {
     width = "100%",
@@ -23,7 +23,6 @@ const WaterfallVirtualList = <T,>(props: WaterfallVirtualListProps<T>) => {
     getNextData = () => {},
     getCurrentIndex = () => {},
   } = props;
-  type EnhancedData<T> = T & { height: number };
 
   const verticalInterval = useMemo(() => {
     try {
