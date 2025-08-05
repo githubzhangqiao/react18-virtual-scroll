@@ -174,4 +174,4 @@ const NonFixedHeight = <T,>(props: WaterfallVirtualListProps<T>) => {
   );
 };
 
-export default NonFixedHeight;
+export { NonFixedHeight };
