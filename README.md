@@ -19,24 +19,25 @@ npm install --save react18-virtual-scroll
 
 ## 使用
 
-|      属性       | 说明                                                                       | 类型                         | 默认值    | 生效组件             |
-| :-------------: | -------------------------------------------------------------------------- | ---------------------------- | --------- | -------------------- |
-|      data       | 需要渲染的数据列表                                                         | object[ ]                    | [ ]       | all                  |
-|      width      | 虚拟滚动容器的宽度                                                         | string                       | 100%      | all                  |
-|     height      | 虚拟滚动容器的高度                                                         | string                       | 500px     | all                  |
-|    className    | 虚拟滚动容器的 class 名                                                    | string                       | ""        | all                  |
-|      style      | 虚拟滚动容器的 style 样式                                                  | React.CSSProperties          | { }       | all                  |
-|   itemNumber    | 虚拟滚动容器中渲染的数量                                                   | number                       | 10        | all                  |
-|    overscan     | 以 itemNumber 为基础向上下额外渲染的数量                                   | number                       | 5         | all                  |
-|       gap       | 虚拟滚动容器每项的间距                                                     | number or [ number, number ] | 8         | all                  |
-|      Item       | 每一项的渲染组件                                                           | Item                         | 必传项    | all                  |
-|   getNextData   | 获取下一页数据的方法                                                       | () => void                   | () => { } | all                  |
-|   getLastData   | 获取上一页数据的方法                                                       | (scrollTo: scrollTo) => void | () => { } | VirtualList          |
-| getCurrentIndex | 获取当前页面可视区域中第一个 item 的 index                                 | (number) => void             | () => { } | VirtualList          |
-|  columnNumber   | 瀑布流的列数                                                               | number                       | 2         | WaterfallVirtualList |
-|    isVirtual    | 是否启用虚拟滚动，禁用虚拟滚动时 itemNumber 和 overscan 失效               | boolean                      | true      | WaterfallVirtualList |
-| isUnknownHeight | 是否启用自动计算 item 高度，启用后将不在使用 data 中的 height 属性作为高度 | boolean                      | false     | VirtualList          |
-|     itemKey     | 每个 item 中的唯一值，在启用 isUnknownHeight 时必传                        | string                       |           | VirtualList          |
+|      属性       | 说明                                                                       | 类型                         | 默认值    | 生效组件                               |
+| :-------------: | -------------------------------------------------------------------------- | ---------------------------- | --------- | -------------------------------------- |
+|      data       | 需要渲染的数据列表                                                         | object[ ]                    | [ ]       | all                                    |
+|      width      | 虚拟滚动容器的宽度                                                         | string                       | 100%      | all                                    |
+|     height      | 虚拟滚动容器的高度                                                         | string                       | 500px     | all                                    |
+|    className    | 虚拟滚动容器的 class 名                                                    | string                       | ""        | all                                    |
+|      style      | 虚拟滚动容器的 style 样式                                                  | React.CSSProperties          | { }       | all                                    |
+|   itemNumber    | 虚拟滚动容器中渲染的数量                                                   | number                       | 10        | all                                    |
+|    overscan     | 以 itemNumber 为基础向上下额外渲染的数量                                   | number                       | 5         | all                                    |
+|       gap       | 虚拟滚动容器每项的间距                                                     | number or [ number, number ] | 8         | all                                    |
+|      Item       | 每一项的渲染组件                                                           | Item                         | 必传项    | all                                    |
+|   getNextData   | 获取下一页数据的方法                                                       | () => void                   | () => { } | all                                    |
+|   getLastData   | 获取上一页数据的方法                                                       | (scrollTo: scrollTo) => void | () => { } | VirtualList                            |
+| getCurrentIndex | 获取当前页面可视区域中第一个 item 的 index                                 | (number) => void             | () => { } | VirtualList                            |
+|  columnNumber   | 瀑布流的列数                                                               | number                       | 2         | WaterfallVirtualList or NonFixedHeight |
+|    isVirtual    | 是否启用虚拟滚动，禁用虚拟滚动时 itemNumber 和 overscan 失效               | boolean                      | true      | WaterfallVirtualList or NonFixedHeight |
+| isUnknownHeight | 是否启用自动计算 item 高度，启用后将不在使用 data 中的 height 属性作为高度 | boolean                      | false     | all                                    |
+|     itemKey     | 每个 item 中的唯一值，在启用 isUnknownHeight 时必传                        | string                       |           | all                                    |
+|   messageType   | 在 dom 渲染成功后想要修改某个元素的高度时 postMessage 的 type              | string                       |           | NonFixedHeight                         |
 
 ### Item 渲染组件类型
 
@@ -151,6 +152,86 @@ const Home = ({ initialData }) => {
         height={"100vh"}
         width={"100%"}
         columnNumber="2"
+      />
+    </div>
+  );
+};
+
+export default Home;
+```
+
+3. NonFixedHeight (非固定高度虚拟滚动)
+
+```tsx
+import React from "react";
+import { NonFixedHeight } from "react18-virtual-scroll";
+
+const Home = ({ initialData }) => {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    setData(
+      new Array(30).fill({}).map((item, index) => {
+        return {
+          ...item,
+          index: index,
+          height: 200,
+          text: new Array(Math.ceil(Math.random() * 5) + 3)
+            .fill(1)
+            .map(() => {
+              return "测试试";
+            })
+            .join(""),
+        };
+      })
+    );
+  }, []);
+
+  const Item: React.FC<{
+    item: any;
+    index: number;
+    height: number | "auto";
+    ref: React.RefObject<HTMLDivElement>;
+  }> = ({ item, index, height, ref }, defaultStyle) => {
+    return (
+      <div style={{ overflow: "hidden", ...defaultStyle, height }} ref={ref}>
+        <div
+          style={{
+            zIndex: 1,
+            backgroundColor: "red",
+          }}
+        >
+          {item.text}
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div>
+      <div
+        onClick={() => {
+          window.postMessage({ item: { index: 0 }, height: 200, type: "type" });
+        }}
+      >
+        点击
+      </div>
+      <NonFixedHeight
+        Item={Item}
+        data={data}
+        width={"110px"}
+        className="container"
+        columnNumber={3}
+        isVirtual={true}
+        itemNumber={10}
+        overscan={5}
+        gap={10}
+        messageType={"messageType"}
+        isUnknownHeight={true}
+        itemKey={"index"}
+        getCurrentIndex={(index) => {
+          console.log(index);
+        }}
       />
     </div>
   );
