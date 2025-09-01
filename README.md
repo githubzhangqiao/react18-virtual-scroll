@@ -160,7 +160,7 @@ const Home = ({ initialData }) => {
 export default Home;
 ```
 
-3. NonFixedHeight (非固定高度虚拟滚动)
+3. NonFixedHeight (非固定高度虚拟滚动) [demo](https://codesandbox.io/p/sandbox/virtuallist-react18-virtual-scroll-forked-f893hk)
 
 ```tsx
 import React { useEffect, useState } from "react";
