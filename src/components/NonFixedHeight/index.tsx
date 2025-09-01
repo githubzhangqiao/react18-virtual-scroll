@@ -155,8 +155,8 @@ const NonFixedHeight = <T,>(props: WaterfallVirtualListProps<T>) => {
         style={{
           width: w,
           position: "absolute",
-          // left: '-99999px',
-          // top: '-99999px',
+          left: "-99999px",
+          top: "-99999px",
         }}
       >
         {data.length

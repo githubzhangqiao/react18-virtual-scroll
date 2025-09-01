@@ -163,7 +163,7 @@ export default Home;
 3. NonFixedHeight (非固定高度虚拟滚动)
 
 ```tsx
-import React from "react";
+import React { useEffect, useState } from "react";
 import { NonFixedHeight } from "react18-virtual-scroll";
 
 const Home = ({ initialData }) => {
@@ -211,15 +211,16 @@ const Home = ({ initialData }) => {
     <div>
       <div
         onClick={() => {
-          window.postMessage({ item: { index: 0 }, height: 200, type: "type" });
+          window.postMessage({ item: { index: 0 }, height: 200, type: "messageType" });
         }}
       >
         点击
       </div>
-      <NonFixedHeight
+     <NonFixedHeight
         Item={Item}
         data={data}
         width={"110px"}
+        // height={'300px'}
         className="container"
         columnNumber={3}
         isVirtual={true}
@@ -229,9 +230,6 @@ const Home = ({ initialData }) => {
         messageType={"messageType"}
         isUnknownHeight={true}
         itemKey={"index"}
-        getCurrentIndex={(index) => {
-          console.log(index);
-        }}
       />
     </div>
   );
